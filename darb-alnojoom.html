@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>درب النجوم — رحلتك نحو ٣٠ يوم</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@300;400;500;700&display=swap');
+
+  :root{
+    --bg-deep:#0a0c1e;
+    --bg-mid:#12163a;
+    --surface:#1b2044;
+    --surface-2:#232a56;
+    --gold:#e8b84a;
+    --gold-soft:#f3d488;
+    --green:#7fd9a8;
+    --coral:#e8896a;
+    --text:#f5f1e8;
+    --text-muted:#9aa0c4;
+    --line-dim:#2c3364;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  body{
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(232,184,74,0.08), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 100%, rgba(127,217,168,0.06), transparent),
+      linear-gradient(180deg, var(--bg-deep), var(--bg-mid));
+    background-attachment:fixed;
+    min-height:100vh;
+    font-family:'Tajawal', sans-serif;
+    color:var(--text);
+    padding-bottom:100px;
+    overflow-x:hidden;
+  }
+
+  /* twinkling background stars */
+  .bg-stars{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;}
+  .bg-star{position:absolute; width:2px; height:2px; background:#fff; border-radius:50%; opacity:.4; animation:twinkle 4s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:.15} 50%{opacity:.7}}
+
+  .wrap{position:relative; z-index:1; max-width:520px; margin:0 auto; padding:28px 20px 0;}
+
+  header{text-align:center; margin-bottom:28px;}
+  header .eyebrow{font-size:13px; color:var(--gold-soft); letter-spacing:1px; font-weight:500;}
+  header h1{font-family:'Cairo', sans-serif; font-weight:900; font-size:26px; margin-top:6px; background:linear-gradient(90deg, var(--gold-soft), var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  header .date{font-size:13px; color:var(--text-muted); margin-top:4px;}
+
+  /* HERO */
+  .hero{
+    background:radial-gradient(circle at 50% 20%, var(--surface-2), var(--surface));
+    border:1px solid rgba(232,184,74,0.15);
+    border-radius:28px;
+    padding:32px 24px;
+    text-align:center;
+    box-shadow:0 20px 50px -20px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.03);
+    margin-bottom:32px;
+  }
+
+  .streak-circle{
+    width:150px; height:150px; margin:0 auto 18px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    background:conic-gradient(var(--gold) calc(var(--pct,0)*1%), var(--line-dim) 0);
+    position:relative;
+  }
+  .streak-circle::before{
+    content:''; position:absolute; inset:8px; border-radius:50%;
+    background:var(--bg-mid);
+  }
+  .streak-circle .num{position:relative; font-family:'Cairo',sans-serif; font-weight:900; font-size:44px; color:var(--gold-soft); line-height:1;}
+  .streak-circle .lbl{position:relative; font-size:12px; color:var(--text-muted); margin-top:2px;}
+
+  .hero h2{font-family:'Cairo',sans-serif; font-weight:700; font-size:18px; margin-bottom:6px;}
+  .hero p.sub{color:var(--text-muted); font-size:13.5px; margin-bottom:22px; line-height:1.7;}
+
+  .btn{
+    border:none; cursor:pointer; font-family:'Cairo',sans-serif; font-weight:700;
+    border-radius:16px; padding:16px 28px; font-size:16px; width:100%;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{
+    background:linear-gradient(135deg, var(--green), #5fc48a);
+    color:#0a2417; box-shadow:0 10px 25px -8px rgba(127,217,168,.5);
+  }
+  .btn-done{
+    background:var(--surface-2); color:var(--gold-soft); border:1px solid rgba(232,184,74,.3);
+  }
+  .btn-ghost{
+    background:transparent; color:var(--text-muted); border:1px solid var(--line-dim);
+  }
+
+  /* CONSTELLATION */
+  .section-title{text-align:center; margin-bottom:6px;}
+  .section-title h3{font-family:'Cairo',sans-serif; font-weight:700; font-size:19px; color:var(--gold-soft);}
+  .section-title p{font-size:13px; color:var(--text-muted); margin-top:4px;}
+
+  .constellation-box{
+    background:radial-gradient(ellipse at 50% 0%, rgba(232,184,74,.05), transparent 60%);
+    border-radius:24px; padding:10px 0 20px; margin:18px 0 32px;
+  }
+  .constellation-box svg{width:100%; height:auto; display:block;}
+
+  .star-tooltip{
+    position:absolute; background:var(--surface-2); border:1px solid rgba(232,184,74,.3);
+    border-radius:10px; padding:6px 12px; font-size:12px; color:var(--text); pointer-events:none;
+    transform:translate(-50%,-115%); white-space:nowrap; z-index:5; box-shadow:0 8px 20px rgba(0,0,0,.4);
+    opacity:0; transition:opacity .15s;
+  }
+
+  /* JOURNAL */
+  .journal{
+    background:var(--surface); border-radius:20px; padding:20px; margin-bottom:28px;
+    border:1px solid rgba(255,255,255,.04);
+  }
+  .journal h4{font-family:'Cairo',sans-serif; font-size:15px; font-weight:700; margin-bottom:10px; color:var(--text);}
+  .journal textarea{
+    width:100%; min-height:80px; background:var(--bg-mid); border:1px solid var(--line-dim);
+    border-radius:12px; padding:12px; color:var(--text); font-family:'Tajawal',sans-serif; font-size:14px;
+    resize:vertical; outline:none;
+  }
+  .journal textarea:focus{border-color:var(--gold);}
+  .journal .save-note{font-size:11px; color:var(--text-muted); margin-top:6px; height:14px;}
+
+  /* stats row */
+  .stats{display:flex; gap:12px; margin-bottom:28px;}
+  .stat-card{
+    flex:1; background:var(--surface); border-radius:16px; padding:16px 10px; text-align:center;
+    border:1px solid rgba(255,255,255,.04);
+  }
+  .stat-card .v{font-family:'Cairo',sans-serif; font-weight:900; font-size:22px; color:var(--gold-soft);}
+  .stat-card .l{font-size:11px; color:var(--text-muted); margin-top:4px;}
+
+  /* SOS floating */
+  .sos-btn{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
+    background:linear-gradient(135deg, var(--coral), #c96a4e);
+    color:#2a0f08; font-family:'Cairo',sans-serif; font-weight:700; font-size:14.5px;
+    border:none; border-radius:999px; padding:14px 26px; cursor:pointer;
+    box-shadow:0 12px 30px -8px rgba(232,137,106,.6); z-index:20;
+    display:flex; align-items:center; gap:8px;
+  }
+
+  /* MODAL */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(5,6,18,.82); backdrop-filter:blur(4px);
+    display:none; align-items:center; justify-content:center; z-index:100; padding:20px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--surface); border-radius:24px; padding:28px 22px; max-width:400px; width:100%;
+    border:1px solid rgba(232,184,74,.2); max-height:88vh; overflow-y:auto;
+    text-align:center;
+  }
+  .modal h3{font-family:'Cairo',sans-serif; font-size:19px; margin-bottom:12px; color:var(--gold-soft);}
+  .modal p{font-size:14px; color:var(--text-muted); line-height:1.8; margin-bottom:16px;}
+
+  .breathing-circle{
+    width:120px; height:120px; margin:10px auto 18px; border-radius:50%;
+    background:radial-gradient(circle, rgba(127,217,168,.35), rgba(127,217,168,.05));
+    border:2px solid var(--green);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Cairo',sans-serif; font-weight:700; color:var(--green); font-size:14px;
+    animation:breathe 8s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%{transform:scale(.75);} 33%{transform:scale(1.15);} 66%{transform:scale(1.15);} 100%{transform:scale(.75);}
+  }
+
+  .hotline-box{
+    background:var(--bg-mid); border:1px solid var(--line-dim); border-radius:14px; padding:14px; margin-bottom:16px;
+  }
+  .hotline-box .num{font-family:'Cairo',sans-serif; font-weight:900; font-size:26px; color:var(--gold-soft); letter-spacing:2px;}
+  .hotline-box .desc{font-size:12px; color:var(--text-muted); margin-top:4px;}
+
+  .modal-actions{display:flex; flex-direction:column; gap:10px;}
+
+  @media (max-width:380px){
+    .streak-circle{width:130px; height:130px;}
+    .streak-circle .num{font-size:38px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-stars" id="bgStars"></div>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">رحلتك نحو التعافي</div>
+    <h1>درب النجوم</h1>
+    <div class="date" id="todayDate"></div>
+  </header>
+
+  <div class="hero">
+    <div class="streak-circle" id="streakCircle">
+      <div class="num" id="dayNum">0</div>
+      <div class="lbl">من ٣٠ يوم</div>
+    </div>
+    <h2 id="heroTitle">ابدأ رحلتك النهاردة</h2>
+    <p class="sub" id="heroSub">كل يوم بتفضل فيه من غير تعاطي، هو انتصار بيتسجل هنا. خطوة واحدة كل مرة.</p>
+    <button class="btn btn-primary" id="checkinBtn">أكدت اليوم بدون أي تعاطي ✓</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card"><div class="v" id="statStreak">0</div><div class="l">أيام متتالية</div></div>
+    <div class="stat-card"><div class="v" id="statBest">0</div><div class="l">أفضل رقم وصلتله</div></div>
+    <div class="stat-card"><div class="v" id="statTotal">0</div><div class="l">إجمالي أيام النجاح</div></div>
+  </div>
+
+  <div class="section-title">
+    <h3>✦ درب النجوم ✦</h3>
+    <p>كل نجمة هي يوم انتصرت فيه على نفسك</p>
+  </div>
+  <div class="constellation-box" style="position:relative;">
+    <svg id="constellationSvg" viewBox="0 0 320 700" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="star-tooltip" id="starTooltip"></div>
+  </div>
+
+  <div class="journal">
+    <h4>حابب تكتب حاجة عن يومك؟ (اختياري)</h4>
+    <textarea id="journalText" placeholder="اكتب أي حاجة حاسس بيها دلوقتي..."></textarea>
+    <div class="save-note" id="saveNote"></div>
+  </div>
+</div>
+
+<button class="sos-btn" id="sosBtn">🆘 لحظة صعبة؟ اضغط هنا</button>
+
+<div class="modal-overlay" id="sosModal">
+  <div class="modal">
+    <h3>خد نفسك، انت مش لوحدك</h3>
+    <p>الرغبة اللي حاسس بيها دلوقتي مؤقتة، وهتعدي. خلينا نعدي اللحظة دي مع بعض.</p>
+    <div class="breathing-circle">شهيق... زفير</div>
+    <p style="font-size:13px;">اتبع دائرة التنفس: كبرت = خد نفس، صغرت = طلع نفسك، ببطء، لمدة دقيقة.</p>
+    <div class="hotline-box">
+      <div class="num">16023</div>
+      <div class="desc">الخط الساخن لصندوق مكافحة وعلاج الإدمان — مجاني وسري، ومتاح على مدار الساعة</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="sosCloseBtn">أنا كويس، هكمل</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="gapModal">
+  <div class="modal">
+    <h3 id="gapTitle">لاحظنا إنك غبت شوية</h3>
+    <p id="gapText">مفيش مشكلة، اللي يهم إنك رجعت. تحب تكمل رحلتك من مكانك ولا تفضل تبدأ الدرب من الأول؟</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="gapContinueBtn">أكمل من هنا</button>
+      <button class="btn btn-ghost" id="gapRestartBtn">أبدأ درب جديد</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="completeModal">
+  <div class="modal">
+    <h3>٣٠ يوم كاملين! 🌟</h3>
+    <p>كملت الدرب من الأول للآخر. الرحلة الحقيقية مستمرة، ولو حابب تبدأ درب جديد لتثبيت القوة دي، إحنا هنا.</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="newJourneyBtn">ابدأ درب جديد</button>
+      <button class="btn btn-ghost" id="stayCompleteBtn">اقفل الرسالة دي</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TOTAL_DAYS = 30;
+const MILESTONES = [3,7,14,21,30];
+const STORAGE_KEY = 'darb-recovery-data';
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function daysBetween(a,b){
+  const d1 = new Date(a), d2 = new Date(b);
+  return Math.round((d2-d1)/86400000);
+}
+
+let data = {
+  streak: 0,
+  bestStreak: 0,
+  totalSuccessDays: 0,
+  lastCheckinDate: null,
+  journal: {}
+};
+
+async function loadData(){
+  try{
+    const res = await window.storage.get(STORAGE_KEY, false);
+    if(res && res.value){
+      data = JSON.parse(res.value);
+    }
+  }catch(e){
+    // no existing data yet, use defaults
+  }
+  render();
+}
+
+async function saveData(){
+  try{
+    await window.storage.set(STORAGE_KEY, JSON.stringify(data), false);
+  }catch(e){
+    console.error('تعذر الحفظ', e);
+  }
+}
+
+function renderBgStars(){
+  const el = document.getElementById('bgStars');
+  let html = '';
+  for(let i=0;i<50;i++){
+    const top = Math.random()*100, left = Math.random()*100, delay = Math.random()*4;
+    html += `<div class="bg-star" style="top:${top}%; left:${left}%; animation-delay:${delay}s;"></div>`;
+  }
+  el.innerHTML = html;
+}
+
+function computeStarPositions(){
+  const cols = 5, rows = Math.ceil(TOTAL_DAYS/cols);
+  const marginX = 45, width = 320, rowH = 108, startY = 55;
+  const positions = [];
+  let idx = 0;
+  for(let r=0;r<rows;r++){
+    const rightToLeft = r % 2 === 0;
+    for(let c=0;c<cols && idx<TOTAL_DAYS;c++){
+      const t = c/(cols-1);
+      const x = rightToLeft ? (width-marginX) - t*(width-2*marginX) : marginX + t*(width-2*marginX);
+      const y = startY + r*rowH;
+      positions.push({x,y});
+      idx++;
+    }
+  }
+  return positions;
+}
+
+function renderConstellation(){
+  const svg = document.getElementById('constellationSvg');
+  const positions = computeStarPositions();
+  const rows = Math.ceil(TOTAL_DAYS/5);
+  svg.setAttribute('viewBox', `0 0 320 ${55 + rows*108}`);
+
+  let defs = `
+    <defs>
+      <radialGradient id="goldGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#f3d488"/>
+        <stop offset="100%" stop-color="#e8b84a"/>
+      </radialGradient>
+      <filter id="glowFilter" x="-100%" y="-100%" width="300%" height="300%">
+        <feGaussianBlur stdDeviation="4" result="blur"/>
+        <feMerge>
+          <feMergeNode in="blur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+  `;
+
+  let lines = '';
+  for(let i=0;i<positions.length-1;i++){
+    const a = positions[i], b = positions[i+1];
+    const bothDone = i < data.streak && (i+1) < data.streak;
+    lines += `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" stroke="${bothDone ? '#e8b84a' : '#2c3364'}" stroke-width="${bothDone?2.5:1.5}" stroke-linecap="round" opacity="${bothDone?0.85:0.5}"/>`;
+  }
+
+  let stars = '';
+  positions.forEach((p,i)=>{
+    const dayNum = i+1;
+    const isMilestone = MILESTONES.includes(dayNum);
+    const isDone = dayNum <= data.streak;
+    const isNext = dayNum === data.streak+1;
+    const r = isMilestone ? 15 : 10;
+
+    let fill, stroke, extra='', opacity=1;
+    if(isDone){
+      fill = 'url(#goldGlow)';
+      stroke = '#f3d488';
+      extra = `filter="url(#glowFilter)"`;
+    } else if(isNext){
+      fill = 'rgba(127,217,168,0.15)';
+      stroke = '#7fd9a8';
+      extra = `stroke-dasharray="3,3"`;
+    } else {
+      fill = 'rgba(255,255,255,0.03)';
+      stroke = '#2c3364';
+      opacity = 0.8;
+    }
+
+    stars += `<circle class="star-node" data-day="${dayNum}" data-done="${isDone}" cx="${p.x}" cy="${p.y}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="2" opacity="${opacity}" ${extra} style="cursor:pointer;"/>`;
+    if(isMilestone){
+      stars += `<text x="${p.x}" y="${p.y+4}" text-anchor="middle" font-size="9" font-family="Cairo, sans-serif" font-weight="700" fill="${isDone?'#3a2a08':'#7a819e'}">${dayNum}</text>`;
+    }
+  });
+
+  svg.innerHTML = defs + lines + stars;
+
+  svg.querySelectorAll('.star-node').forEach(node=>{
+    node.addEventListener('mouseenter', (e)=>showTooltip(e, node));
+    node.addEventListener('mouseleave', hideTooltip);
+    node.addEventListener('click', (e)=>showTooltip(e, node));
+  });
+}
+
+function showTooltip(e, node){
+  const tip = document.getElementById('starTooltip');
+  const day = node.getAttribute('data-day');
+  const done = node.getAttribute('data-done') === 'true';
+  const box = node.closest('svg').closest('.constellation-box').getBoundingClientRect();
+  const cx = node.cx.baseVal.value, cy = node.cy.baseVal.value;
+  const svgEl = node.closest('svg');
+  const vb = svgEl.viewBox.baseVal;
+  const scaleX = box.width / vb.width;
+  const scaleY = (svgEl.getBoundingClientRect().height) / vb.height;
+
+  tip.style.left = (cx*scaleX) + 'px';
+  tip.style.top = (cy*scaleY) + 'px';
+  tip.textContent = done ? `يوم ${day} ✓ انتصرت فيه` : `يوم ${day} — لسه ما وصلتش`;
+  tip.style.opacity = '1';
+  clearTimeout(showTooltip._t);
+  showTooltip._t = setTimeout(hideTooltip, 1800);
+}
+function hideTooltip(){
+  document.getElementById('starTooltip').style.opacity = '0';
+}
+
+function render(){
+  document.getElementById('todayDate').textContent = new Date().toLocaleDateString('ar-EG', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  const pct = Math.min(100, Math.round((data.streak/TOTAL_DAYS)*100));
+  document.getElementById('streakCircle').style.setProperty('--pct', pct);
+  document.getElementById('dayNum').textContent = data.streak;
+
+  document.getElementById('statStreak').textContent = data.streak;
+  document.getElementById('statBest').textContent = data.bestStreak;
+  document.getElementById('statTotal').textContent = data.totalSuccessDays;
+
+  const t = todayStr();
+  const checkinBtn = document.getElementById('checkinBtn');
+  const heroTitle = document.getElementById('heroTitle');
+  const heroSub = document.getElementById('heroSub');
+
+  if(data.lastCheckinDate === t){
+    checkinBtn.textContent = 'تم تسجيل النهاردة 🌙 ارجع بكرة';
+    checkinBtn.className = 'btn btn-done';
+    checkinBtn.disabled = true;
+    heroTitle.textContent = 'استمر، إنت ماشي كويس';
+    heroSub.textContent = 'خد قسط من الراحة النهاردة. الدرب هيفضل هنا لما ترجع بكرة.';
+  } else {
+    checkinBtn.textContent = 'أكدت اليوم بدون أي تعاطي ✓';
+    checkinBtn.className = 'btn btn-primary';
+    checkinBtn.disabled = false;
+    if(data.streak === 0){
+      heroTitle.textContent = 'ابدأ رحلتك النهاردة';
+      heroSub.textContent = 'كل يوم بتفضل فيه من غير تعاطي، هو انتصار بيتسجل هنا. خطوة واحدة كل مرة.';
+    } else {
+      heroTitle.textContent = `يوم ${data.streak} خلف ضهرك`;
+      heroSub.textContent = 'دلوقتي وقت تأكيد يوم جديد. إنت أقوى مما تتخيل.';
+    }
+  }
+
+  document.getElementById('journalText').value = data.journal[t] || '';
+
+  renderConstellation();
+}
+
+function checkGap(){
+  const t = todayStr();
+  if(!data.lastCheckinDate) return; // first time user, nothing to check
+  if(data.lastCheckinDate === t) return; // already checked in today
+  const gap = daysBetween(data.lastCheckinDate, t);
+  if(gap > 1){
+    document.getElementById('gapText').textContent =
+      `آخر تسجيل ليك كان قبل ${gap} أيام. اللي حصل حصل، والمهم دلوقتي. تحب تكمل درب النجوم من يوم ${data.streak} ولا تبدأ درب جديد؟`;
+    document.getElementById('gapModal').classList.add('open');
+  }
+}
+
+document.getElementById('checkinBtn').addEventListener('click', async ()=>{
+  const t = todayStr();
+  if(data.lastCheckinDate === t) return;
+  data.streak += 1;
+  data.totalSuccessDays += 1;
+  if(data.streak > data.bestStreak) data.bestStreak = data.streak;
+  data.lastCheckinDate = t;
+  await saveData();
+  render();
+  if(data.streak >= TOTAL_DAYS){
+    setTimeout(()=>document.getElementById('completeModal').classList.add('open'), 400);
+  }
+});
+
+document.getElementById('journalText').addEventListener('input', (e)=>{
+  clearTimeout(window._journalTimer);
+  window._journalTimer = setTimeout(async ()=>{
+    const t = todayStr();
+    data.journal[t] = e.target.value;
+    await saveData();
+    const note = document.getElementById('saveNote');
+    note.textContent = 'اتحفظ ✓';
+    setTimeout(()=>note.textContent='', 1500);
+  }, 600);
+});
+
+document.getElementById('sosBtn').addEventListener('click', ()=>{
+  document.getElementById('sosModal').classList.add('open');
+});
+document.getElementById('sosCloseBtn').addEventListener('click', ()=>{
+  document.getElementById('sosModal').classList.remove('open');
+});
+
+document.getElementById('gapContinueBtn').addEventListener('click', ()=>{
+  document.getElementById('gapModal').classList.remove('open');
+});
+document.getElementById('gapRestartBtn').addEventListener('click', async ()=>{
+  data.streak = 0;
+  data.lastCheckinDate = null;
+  await saveData();
+  document.getElementById('gapModal').classList.remove('open');
+  render();
+});
+
+document.getElementById('newJourneyBtn').addEventListener('click', async ()=>{
+  data.streak = 0;
+  data.lastCheckinDate = null;
+  await saveData();
+  document.getElementById('completeModal').classList.remove('open');
+  render();
+});
+document.getElementById('stayCompleteBtn').addEventListener('click', ()=>{
+  document.getElementById('completeModal').classList.remove('open');
+});
+
+renderBgStars();
+loadData().then(checkGap);
+</script>
+
+</body>
+</html>
